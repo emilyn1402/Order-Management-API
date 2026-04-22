@@ -7,6 +7,6 @@
         public decimal Price { get; set; }
         public int Stock {  get; set; }
 
-        
+        public List<OrderItemModel> OrderItems { get; set; } = new();
     }
 }
