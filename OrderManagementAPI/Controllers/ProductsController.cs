@@ -12,7 +12,7 @@ namespace OrderManagementAPI.Controllers
     {
         private readonly AppDbContext _context;
 
-        //Inject DbContext
+        //Inject database context automatically
         public ProductsController(AppDbContext context)
         {
             _context = context;
@@ -22,6 +22,7 @@ namespace OrderManagementAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            //Read all rows from Products table
             var products = await _context.Products.ToListAsync();
 
             return Ok(products);
