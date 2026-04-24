@@ -84,7 +84,7 @@ namespace OrderManagementAPI.Controllers
             return Ok(orders);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById(int id)
         {
             var order = await _context.Orders
@@ -107,7 +107,8 @@ namespace OrderManagementAPI.Controllers
                 })
                 .FirstOrDefaultAsync();
 
-            if (order == null) return NotFound();
+            if (order == null)
+                return NotFound();
 
             return Ok(order);
         }
