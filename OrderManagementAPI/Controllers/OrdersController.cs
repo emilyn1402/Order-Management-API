@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OrderManagementAPI.Data;
 using OrderManagementAPI.DTOs;
 using OrderManagementAPI.Models;
@@ -54,6 +55,59 @@ namespace OrderManagementAPI.Controllers
             _context.Orders.Add(order);
 
             await _context.SaveChangesAsync();
+
+            return Ok(order);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            var orders = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .Select(o => new OrderResponseDto
+                {
+                    Id = o.Id,
+                    OrderDate = o.OrderDate,
+                    TotalAmount = o.TotalAmount,
+
+                    Items = o.OrderItems.Select(i => new OrderItemResponseDto
+                    {
+                        ProductId = i.ProductId,
+                        ProductName = i.Product.Name,
+                        Quantity = i.Quantity,
+                        Price = i.Price
+                    }).ToList()
+                })
+                .ToListAsync();
+
+            return Ok(orders);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetOrderById(int id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .Where(o => o.Id == id)
+                .Select(o => new OrderResponseDto
+                {
+                    Id = o.Id,
+                    OrderDate = o.OrderDate,
+                    TotalAmount = o.TotalAmount,
+
+                    Items = o.OrderItems.Select(i => new OrderItemResponseDto
+                    {
+                        ProductId = i.ProductId,
+                        ProductName = i.Product.Name,
+                        Quantity = i.Quantity,
+                        Price = i.Price
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            if (order == null) return NotFound();
 
             return Ok(order);
         }
