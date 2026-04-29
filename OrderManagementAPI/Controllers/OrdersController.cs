@@ -63,6 +63,7 @@ namespace OrderManagementAPI.Controllers
                 _context.Orders.Add(order);
 
                 await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
 
                 return Ok(order);
             }
