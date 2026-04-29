@@ -54,7 +54,7 @@ namespace OrderManagementAPI.Controllers
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
-            return Ok(product);
+            return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
         }
 
         // PUT: api/product/1
